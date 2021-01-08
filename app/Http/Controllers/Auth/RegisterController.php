@@ -95,4 +95,27 @@ class RegisterController extends Controller
 
         return redirect($this->redirectPath());
     }
+
+    public function register(Request $request) {
+        $this->validator($request->all())->validate();
+
+        $google2fa = app('pragmarx.google2fa');
+
+        $registrationData = $request->all();
+
+        $registrationData['google2fa_secret'] = $google2fa->generateSecretKey();
+
+        $request->session()->flash('registrationData', $registrationData);
+
+        $QRImage = $google2fa->getQRCodeInline(
+            config('app.name'),
+            $registrationData['email'],
+            $registrationData['google2fa_secret']
+        );
+
+        return view('auth.google2fa', [
+            'QRImage' => $QRImage,
+            'secret' => $registrationData['google2fa_secret']
+        ]);
+    }
 }
