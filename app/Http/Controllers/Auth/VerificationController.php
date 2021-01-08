@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\VerifiesEmails;
@@ -39,4 +40,27 @@ class VerificationController extends Controller
         $this->middleware('signed')->only('verify');
         $this->middleware('throttle:6,1')->only('verify', 'resend');
     }
+
+     /**
+     * Show the email verification notice.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Request $request)
+    {
+        if($request->ajax()) {
+            if($request->user()->hasVerifiedEmail()) {
+                return response()->json([
+                    'success' => true,
+                    'redirectTo' => $this->redirectPath()
+                ]);
+            }
+        }
+
+        return $request->user()->hasVerifiedEmail()
+                        ? redirect($this->redirectPath())
+                        : view('auth.verify');
+    }
+
 }
