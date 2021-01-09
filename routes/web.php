@@ -29,4 +29,5 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::group(['middleware' => ['auth', '2fa', 'password.confirm']], function () {
     Route::get('/profile', 'ProfileController@index')->name('profile.index');
     Route::put('/profile', 'ProfileController@update')->name('profile.update');
+    Route::post('/profile', 'ProfileController@destroy')->name('profile.destroy');
 });
