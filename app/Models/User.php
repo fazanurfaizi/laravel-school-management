@@ -27,7 +27,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'lastname',
         'email',
         'password',
-        'avatar'
+        'avatar',
+        'google2fa_secret'
     ];
 
     /**
@@ -38,6 +39,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = [
         'password',
         'remember_token',
+        'google2fa_secret'
     ];
 
     protected $appends = [
@@ -82,6 +84,14 @@ class User extends Authenticatable implements MustVerifyEmail
             $url .= ' />';
         }
         return $url;
+    }
+
+    public function setGoogle2faSecretAttribute($value) {
+        $this->attributes['google2fa_secret'] = encrypt($value);
+    }
+
+    public function getGoogle2faSecretAttribute($value) {
+        return decrypt($value);
     }
 
     public function results() {
