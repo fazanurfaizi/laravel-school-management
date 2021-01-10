@@ -9,6 +9,8 @@ class Session extends Model
 {
     use HasFactory;
 
+    protected $table = 'exam_sessions';
+
     protected $fillable = [
         'title',
         'description',

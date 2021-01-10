@@ -11,12 +11,12 @@
                     <div>
                         <img src="{{ $QRImage }}">
                     </div>
+                    @if (!@$reauthenticating)
                     <p>Anda harus mengatur Google Authenticator app sebelum melanjutkan.</p>
                     <div>
-                        {{-- <a href="/complete-registration" class="btn-primary">
-                            Selesaikan Pendaftaran
-                        </a> --}}
+                        <a href="/complete-registration"><button class="btn-primary">Selesaikan Pendaftaran</button></a>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>

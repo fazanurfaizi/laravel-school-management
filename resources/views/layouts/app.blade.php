@@ -61,6 +61,9 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('profile.index') }}">
+                                        {{ __('Profile') }}
+                                    </a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -79,8 +82,18 @@
         </nav>
 
         <main class="py-4">
-            @yield('content')
+            <div class="container">
+                @yield('content')
+            </div>
         </main>
     </div>
+
+    <script>
+        $("document").ready(function(){
+            setTimeout(function(){
+                $("div.alert").remove();
+            }, 2000 ); // 5 secs
+        });
+    </script>
 </body>
 </html>
