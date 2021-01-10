@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Contracts\DeletesUsers;
 use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Requests\ChangePasswordRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -12,7 +12,6 @@ use Illuminate\Validation\ValidationException;
 
 class ProfileController extends Controller
 {
-
     public function index() {
         $data = [
             'user' => Auth::user()
@@ -29,6 +28,24 @@ class ProfileController extends Controller
         session()->flash('message', 'Profile updated succesffully');
 
         return redirect('/profile');
+    }
+
+    public function updateProfilePhoto(Request $request) {
+        $request->validate([
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        Auth::user()->updateProfilePhoto($request->photo);
+
+        return back()->with('message', 'You have successfully upload image.');
+    }
+
+    public function changePassword(ChangePasswordRequest $request) {
+        User::find(auth()->user()->id)->update([
+            'password' => Hash::make($request->new_password)
+        ]);
+
+        return redirect('/profile')->with('message', 'Password change successfully');
     }
 
     public function destroy(Request $request) {

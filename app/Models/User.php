@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasProfilePhoto;
 use App\Pivots\StudentCasting;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -12,8 +13,10 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable;
     use HasRoles;
+    use HasProfilePhoto;
     use SoftDeletes;
 
     /**
@@ -27,7 +30,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'lastname',
         'email',
         'password',
-        'avatar',
+        'profile_photo_path',
         'google2fa_secret'
     ];
 
@@ -43,7 +46,8 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     protected $appends = [
-        'fullname'
+        'fullname',
+        'profile_photo_url'
     ];
 
     /**
@@ -87,11 +91,19 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function setGoogle2faSecretAttribute($value) {
-        $this->attributes['google2fa_secret'] = encrypt($value);
+        if($value) {
+            $this->attributes['google2fa_secret'] = encrypt($value);
+        }
     }
 
     public function getGoogle2faSecretAttribute($value) {
-        return decrypt($value);
+        if($value) {
+            return decrypt($value);
+        }
+    }
+
+    public function getEnabled2faAttribute() {
+        return $this->attributes['google2fa_secret'] !== null;
     }
 
     public function results() {

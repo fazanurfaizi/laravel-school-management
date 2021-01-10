@@ -24,9 +24,7 @@ class RegisterController extends Controller
     |
     */
 
-    use RegistersUsers {
-        register as registration;
-    }
+    use RegistersUsers;
 
     /**
      * Where to redirect users after registration.
@@ -75,8 +73,7 @@ class RegisterController extends Controller
             'lastname' => $data['lastname'],
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'google2fa_secret' => $data['google2fa_secret']
+            'password' => Hash::make($data['password'])
         ]);
     }
 
@@ -99,31 +96,31 @@ class RegisterController extends Controller
         return redirect($this->redirectPath());
     }
 
-    public function register(Request $request) {
-        $this->validator($request->all())->validate();
+    // public function register(Request $request) {
+    //     $this->validator($request->all())->validate();
 
-        $google2fa = app('pragmarx.google2fa');
+    //     $google2fa = app('pragmarx.google2fa');
 
-        $registrationData = $request->all();
+    //     $registrationData = $request->all();
 
-        $registrationData['google2fa_secret'] = $google2fa->generateSecretKey();
+    //     $registrationData['google2fa_secret'] = $google2fa->generateSecretKey();
 
-        $request->session()->flash('registrationData', $registrationData);
+    //     $request->session()->flash('registrationData', $registrationData);
 
-        $QRImage = $google2fa->getQRCodeInline(
-            config('app.name'),
-            $registrationData['email'],
-            $registrationData['google2fa_secret']
-        );
+    //     $QRImage = $google2fa->getQRCodeInline(
+    //         config('app.name'),
+    //         $registrationData['email'],
+    //         $registrationData['google2fa_secret']
+    //     );
 
-        return view('google2fa.register', [
-            'QRImage' => $QRImage,
-            'secret' => $registrationData['google2fa_secret']
-        ]);
-    }
+    //     return view('google2fa.register', [
+    //         'QRImage' => $QRImage,
+    //         'secret' => $registrationData['google2fa_secret']
+    //     ]);
+    // }
 
-    public function completeRegistration(Request $request) {
-        $request->merge(session('registrationData'));
-        return $this->registration($request);
-    }
+    // public function completeRegistration(Request $request) {
+    //     $request->merge(session('registrationData'));
+    //     return $this->registration($request);
+    // }
 }
